@@ -14,7 +14,13 @@ export function SizedChart({
 }) {
   return (
     <div className={cn("w-full", className)} style={{ width: "100%", height }}>
-      <ResponsiveContainer width="100%" height={height} minWidth={0} minHeight={height}>
+      <ResponsiveContainer
+        width="100%"
+        height={height}
+        minWidth={0}
+        minHeight={height}
+        initialDimension={{ width: 640, height }}
+      >
         {children}
       </ResponsiveContainer>
     </div>

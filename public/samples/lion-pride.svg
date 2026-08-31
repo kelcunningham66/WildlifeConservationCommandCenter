@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400">
+  <rect width="640" height="400" fill="#070d08"/>
+  <ellipse cx="320" cy="330" rx="220" ry="50" fill="#121f14"/>
+  <g fill="#3cb85a">
+    <ellipse cx="220" cy="250" rx="70" ry="36"/>
+    <ellipse cx="300" cy="248" rx="55" ry="30"/>
+    <ellipse cx="370" cy="252" rx="48" ry="28"/>
+    <ellipse cx="430" cy="258" rx="40" ry="24"/>
+  </g>
+  <g fill="#1d6b33">
+    <rect x="175" y="210" width="14" height="40"/>
+    <rect x="250" y="205" width="12" height="42"/>
+    <rect x="340" y="214" width="12" height="36"/>
+    <rect x="410" y="222" width="10" height="32"/>
+  </g>
+  <circle cx="160" cy="228" r="22" fill="#3cb85a"/>
+  <text x="16" y="28" fill="#7dff9a" font-family="monospace" font-size="14">CT-F08  22:05:09  IR</text>
+  <text x="16" y="384" fill="#7dff9a" font-family="monospace" font-size="12">SECTOR F  KAFUE PRIDE</text>
+</svg>

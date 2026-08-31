@@ -14,7 +14,6 @@ import {
   ShieldAlert,
   Trees,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { conservancy } from "@/data/sectors";
 import { threatAlerts } from "@/data/threats";
@@ -95,9 +94,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex items-center justify-between gap-3 border-b px-4 py-2.5">
           <div className="flex items-center gap-2 md:hidden">
-            <Button variant="ghost" size="icon-sm" onClick={() => setOpen(true)} aria-label="Open menu">
-              <Menu />
-            </Button>
+            <button
+              type="button"
+              className="inline-flex size-8 items-center justify-center rounded-lg hover:bg-muted"
+              onClick={() => setOpen(true)}
+              aria-label="Open menu"
+            >
+              <Menu className="size-4" />
+            </button>
             <Brand />
           </div>
           <p className="hidden text-sm text-muted-foreground md:block">
@@ -126,7 +130,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <main className="flex-1 p-4 md:p-6">{children}</main>
       </div>
 
-      <Sheet open={open} onOpenChange={setOpen}>
+      <Sheet open={open} onOpenChange={(next) => setOpen(next)}>
         <SheetContent side="left" className="w-64 bg-sidebar p-3">
           <SheetTitle className="sr-only">Navigation</SheetTitle>
           <Brand />

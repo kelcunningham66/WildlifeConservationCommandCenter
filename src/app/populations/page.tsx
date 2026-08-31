@@ -1,9 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Area, AreaChart, CartesianGrid, Line, XAxis, YAxis } from "recharts";
+import { Area, AreaChart, CartesianGrid, Line, Tooltip, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { SizedChart } from "@/components/charts/sized-chart";
 import { TrendBadge } from "@/components/status-badges";
 import { populationSeries, species } from "@/data/species";
 import { formatMonth, holtForecast, percentChange } from "@/lib/forecast";
@@ -85,32 +85,27 @@ export default function PopulationsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <ChartContainer
-            className="h-72 w-full"
-            config={{
-              actual: { label: "Observed", color: "var(--chart-1)" },
-              forecast: { label: "Forecast", color: "var(--chart-2)" },
-              high: { label: "Upper", color: "var(--chart-3)" },
-            }}
-          >
-            <AreaChart data={chart}>
-              <CartesianGrid vertical={false} />
-              <XAxis dataKey="label" tickLine={false} axisLine={false} interval={3} />
-              <YAxis tickLine={false} axisLine={false} width={40} />
-              <ChartTooltip content={<ChartTooltipContent />} />
-              <Area dataKey="high" type="monotone" stroke="none" fill="var(--color-high)" fillOpacity={0.15} />
-              <Area dataKey="low" type="monotone" stroke="none" fill="var(--background)" fillOpacity={1} />
-              <Line dataKey="actual" type="monotone" stroke="var(--color-actual)" strokeWidth={2} dot={false} connectNulls={false} />
+          <SizedChart>
+            <AreaChart data={chart} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+              <CartesianGrid vertical={false} stroke="#2d4a38" />
+              <XAxis dataKey="label" tickLine={false} axisLine={false} interval={3} tick={{ fill: "#9cb8a6", fontSize: 11 }} />
+              <YAxis tickLine={false} axisLine={false} width={40} tick={{ fill: "#9cb8a6", fontSize: 11 }} />
+              <Tooltip
+                contentStyle={{ background: "#1a2e24", border: "1px solid #2d4a38", borderRadius: 8 }}
+                labelStyle={{ color: "#d7eadc" }}
+              />
+              <Area dataKey="high" type="monotone" stroke="none" fill="#3d6b52" fillOpacity={0.25} />
+              <Line dataKey="actual" type="monotone" stroke="#8ee0a0" strokeWidth={2} dot={false} connectNulls={false} />
               <Line
                 dataKey="forecast"
                 type="monotone"
-                stroke="var(--color-forecast)"
+                stroke="#e6c07a"
                 strokeWidth={1.5}
                 strokeDasharray="4 4"
                 dot={false}
               />
             </AreaChart>
-          </ChartContainer>
+          </SizedChart>
           <p className="mt-4 text-sm text-muted-foreground">{sp.notes}</p>
         </CardContent>
       </Card>

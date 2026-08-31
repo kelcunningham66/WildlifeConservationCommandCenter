@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Camera, Loader2, ShieldAlert, Upload } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { CameraDetection } from "@/data/types";
@@ -17,33 +16,9 @@ const demos = [
   { file: "/samples/snare-zebra.svg", label: "Snare", name: "snare-zebra.svg" },
 ];
 
-function samplePixels(img: HTMLImageElement) {
-  const canvas = document.createElement("canvas");
-  const w = 48;
-  const h = 32;
-  canvas.width = w;
-  canvas.height = h;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return {};
-  ctx.drawImage(img, 0, 0, w, h);
-  const data = ctx.getImageData(0, 0, w, h).data;
-  let lum = 0;
-  let green = 0;
-  let warm = 0;
-  const n = w * h;
-  for (let i = 0; i < data.length; i += 4) {
-    const r = data[i];
-    const g = data[i + 1];
-    const b = data[i + 2];
-    lum += 0.2126 * r + 0.7152 * g + 0.0722 * b;
-    if (g > r + 12 && g > b) green += 1;
-    if (r > 140 && r > g + 10 && r > b) warm += 1;
-  }
-  return { luminance: lum / n, greenRatio: green / n, warmRatio: warm / n };
-}
-
 async function fileFromUrl(url: string, name: string) {
   const res = await fetch(url);
+  if (!res.ok) throw new Error(`Could not fetch ${url}`);
   const blob = await res.blob();
   return new File([blob], name, { type: blob.type || "image/svg+xml" });
 }
@@ -54,35 +29,26 @@ export function TrapAnalyzer() {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<CameraDetection | null>(null);
 
-  async function run(file: File, objectUrl?: string) {
+  async function run(file: File, previewUrl?: string) {
     setBusy(true);
     setError(null);
     setResult(null);
-    const url = objectUrl ?? URL.createObjectURL(file);
-    setPreview(url);
-
-    const img = new Image();
-    img.src = url;
-    await new Promise((resolve, reject) => {
-      img.onload = resolve;
-      img.onerror = reject;
-    });
-    const feats = samplePixels(img);
-
-    const body = new FormData();
-    body.append("image", file);
-    if (feats.luminance != null) body.append("luminance", String(feats.luminance));
-    if (feats.greenRatio != null) body.append("greenRatio", String(feats.greenRatio));
-    if (feats.warmRatio != null) body.append("warmRatio", String(feats.warmRatio));
-
-    const res = await fetch("/api/analyze", { method: "POST", body });
-    const json = await res.json();
-    setBusy(false);
-    if (!res.ok) {
-      setError(json.error ?? "Analysis failed.");
-      return;
+    setPreview(previewUrl ?? URL.createObjectURL(file));
+    try {
+      const body = new FormData();
+      body.append("image", file);
+      const res = await fetch("/api/analyze", { method: "POST", body });
+      const json = await res.json();
+      if (!res.ok) {
+        setError(json.error ?? "Analysis failed.");
+        return;
+      }
+      setResult(json.detection);
+    } catch {
+      setError("Could not reach the detector. Try again.");
+    } finally {
+      setBusy(false);
     }
-    setResult(json.detection);
   }
 
   return (
@@ -111,11 +77,10 @@ export function TrapAnalyzer() {
           </label>
           <div className="flex flex-wrap gap-2">
             {demos.map((d) => (
-              <Button
+              <button
                 key={d.file}
                 type="button"
-                size="sm"
-                variant="outline"
+                className="h-7 rounded-lg border border-border px-2.5 text-[0.8rem] hover:bg-muted"
                 onClick={() => {
                   void fileFromUrl(d.file, d.name)
                     .then((f) => run(f, d.file))
@@ -123,7 +88,7 @@ export function TrapAnalyzer() {
                 }}
               >
                 {d.label}
-              </Button>
+              </button>
             ))}
           </div>
           <div className="relative overflow-hidden rounded-xl border bg-black/40">

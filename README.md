@@ -24,23 +24,23 @@ npm run dev
 
 Open [http://127.0.0.1:43180](http://127.0.0.1:43180).
 
-## GitHub: WildlifeConversationCommandCenter
+## GitHub: WildlifeConservationCommandCenter
 
-Create a public GitHub repository named **WildlifeConversationCommandCenter**, then push this project:
+Create a public GitHub repository named **WildlifeConservationCommandCenter**, then push this project:
 
 ```bash
-git remote add github https://github.com/<your-user>/WildlifeConversationCommandCenter.git
+git remote add github https://github.com/<your-user>/WildlifeConservationCommandCenter.git
 git branch -M main
 git push -u github main
 ```
 
-If you started this project in Cursor without a GitHub remote yet, use the **Create repo** control in the agent view, then rename the repository to `WildlifeConversationCommandCenter` in GitHub settings if needed.
+If you started this project in Cursor without a GitHub remote yet, use the **Create repo** control in the agent view, then rename the repository to `WildlifeConservationCommandCenter` in GitHub settings if needed.
 
 ## Deploy on Vercel
 
 This is a standard Next.js App Router app. No environment variables, database, or secrets are required.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/YOUR_GITHUB_USER/WildlifeConversationCommandCenter&project-name=wildlife-conversation-command-center&framework=nextjs)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/YOUR_GITHUB_USER/WildlifeConservationCommandCenter&project-name=wildlife-conservation-command-center&framework=nextjs)
 
 Or from the CLI, logged into the Vercel account that should own the deployment:
 
@@ -48,7 +48,7 @@ Or from the CLI, logged into the Vercel account that should own the deployment:
 npx vercel --yes --prod
 ```
 
-The production URL will look like `https://wildlife-conversation-command-center.vercel.app` (Vercel may append a suffix if the name is taken).
+The production URL will look like `https://wildlife-conservation-command-center.vercel.app` (Vercel may append a suffix if the name is taken).
 
 Anonymous preview deploys (`vercel deploy --temporary`) expire in about an hour unless you [claim](https://vercel.com/docs/deployments/claim-deployments) them into your Vercel account.
 

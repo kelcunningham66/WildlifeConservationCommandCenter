@@ -1,6 +1,3 @@
-"use client";
-
-import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ReserveMap } from "@/components/map/reserve-map";
@@ -21,18 +18,27 @@ const kinds: Array<ThreatKind | "all"> = [
   "fence",
 ];
 
-export default function ThreatsPage() {
-  const [kind, setKind] = useState<(typeof kinds)[number]>("all");
-  const [sector, setSector] = useState<SectorId | undefined>();
-  const [selected, setSelected] = useState(threatAlerts[0].id);
+function qs(kind: string, sector?: string, id?: string) {
+  const p = new URLSearchParams();
+  if (kind && kind !== "all") p.set("kind", kind);
+  if (sector) p.set("sector", sector);
+  if (id) p.set("id", id);
+  const s = p.toString();
+  return s ? `/threats?${s}` : "/threats";
+}
 
-  const filtered = useMemo(
-    () =>
-      threatAlerts.filter((t) => (kind === "all" || t.kind === kind) && (!sector || t.sector === sector)),
-    [kind, sector]
+export default async function ThreatsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ kind?: string; sector?: string; id?: string }>;
+}) {
+  const params = await searchParams;
+  const kind = (kinds.includes(params.kind as ThreatKind) ? params.kind : "all") as (typeof kinds)[number];
+  const sector = params.sector as SectorId | undefined;
+  const filtered = threatAlerts.filter(
+    (t) => (kind === "all" || t.kind === kind) && (!sector || t.sector === sector)
   );
-
-  const active = filtered.find((t) => t.id === selected) ?? filtered[0];
+  const active = filtered.find((t) => t.id === params.id) ?? filtered[0];
   const counts = threatAlerts.reduce<Partial<Record<SectorId, number>>>((acc, t) => {
     if (t.status !== "resolved") acc[t.sector] = (acc[t.sector] ?? 0) + 1;
     return acc;
@@ -51,17 +57,16 @@ export default function ThreatsPage() {
 
       <div className="flex flex-wrap gap-2">
         {kinds.map((k) => (
-          <button
+          <a
             key={k}
-            type="button"
-            onClick={() => setKind(k)}
+            href={qs(k, sector)}
             className={cn(
               "rounded-full border px-3 py-1 text-sm capitalize",
               kind === k ? "bg-primary text-primary-foreground" : "hover:bg-muted"
             )}
           >
             {k}
-          </button>
+          </a>
         ))}
       </div>
 
@@ -70,7 +75,7 @@ export default function ThreatsPage() {
           <ReserveMap
             highlight={sector}
             counts={counts}
-            onSelect={(id) => setSector((cur) => (cur === id ? undefined : id))}
+            hrefForSector={(id) => qs(kind, sector === id ? undefined : id)}
           />
           <p className="text-xs text-muted-foreground">
             Click a sector to filter. Open incidents per sector are labelled on the map.
@@ -80,17 +85,20 @@ export default function ThreatsPage() {
           {filtered.length === 0 && (
             <Card>
               <CardContent className="py-8 text-sm text-muted-foreground">
-                No alerts in this filter. Clear the sector or choose another source type.
+                No alerts in this filter.{" "}
+                <a href="/threats" className="underline">
+                  Clear filters
+                </a>
+                .
               </CardContent>
             </Card>
           )}
           {filtered.map((t) => (
-            <button
+            <a
               key={t.id}
-              type="button"
-              onClick={() => setSelected(t.id)}
+              href={qs(kind, sector, t.id)}
               className={cn(
-                "w-full rounded-xl border p-3 text-left text-sm hover:bg-muted/40",
+                "block w-full rounded-xl border p-3 text-left text-sm hover:bg-muted/40",
                 active?.id === t.id && "ring-2 ring-ring"
               )}
             >
@@ -101,7 +109,7 @@ export default function ThreatsPage() {
               <p className="mt-1 text-xs text-muted-foreground">
                 {t.id} · Sector {t.sector} · {t.source} · {t.status}
               </p>
-            </button>
+            </a>
           ))}
         </div>
       </div>

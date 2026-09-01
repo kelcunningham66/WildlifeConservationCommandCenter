@@ -1,8 +1,5 @@
-"use client";
-
-import { Area, AreaChart, Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { SizedChart } from "@/components/charts/sized-chart";
+import { BarChartSvg, LineChartSvg } from "@/components/charts/svg-charts";
 import { habitatNotes, habitatSeries } from "@/data/habitat";
 import { formatMonth } from "@/lib/forecast";
 
@@ -60,19 +57,14 @@ export default function HabitatPage() {
             <CardDescription>NDVI and a simple surface-water index, September 2025–August 2026.</CardDescription>
           </CardHeader>
           <CardContent>
-            <SizedChart height={256}>
-              <AreaChart data={chart} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-                <CartesianGrid vertical={false} stroke="#2d4a38" />
-                <XAxis dataKey="label" tickLine={false} axisLine={false} tick={{ fill: "#9cb8a6", fontSize: 11 }} />
-                <YAxis tickLine={false} axisLine={false} domain={[0, 1]} width={32} tick={{ fill: "#9cb8a6", fontSize: 11 }} />
-                <Tooltip
-                  contentStyle={{ background: "#1a2e24", border: "1px solid #2d4a38", borderRadius: 8 }}
-                  labelStyle={{ color: "#d7eadc" }}
-                />
-                <Area dataKey="ndvi" type="monotone" stroke="#8ee0a0" fill="#8ee0a0" fillOpacity={0.2} />
-                <Area dataKey="waterIndex" type="monotone" stroke="#6cb3d4" fill="#6cb3d4" fillOpacity={0.15} />
-              </AreaChart>
-            </SizedChart>
+            <LineChartSvg
+              height={256}
+              labels={chart.map((h) => h.label)}
+              series={[
+                { name: "NDVI", color: "#8ee0a0", values: chart.map((h) => h.ndvi) },
+                { name: "Water", color: "#6cb3d4", values: chart.map((h) => h.waterIndex) },
+              ]}
+            />
           </CardContent>
         </Card>
         <Card>
@@ -81,19 +73,13 @@ export default function HabitatPage() {
             <CardDescription>Burned hectares and cumulative charcoal encroachment inside the boundary.</CardDescription>
           </CardHeader>
           <CardContent>
-            <SizedChart height={256}>
-              <BarChart data={chart} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-                <CartesianGrid vertical={false} stroke="#2d4a38" />
-                <XAxis dataKey="label" tickLine={false} axisLine={false} tick={{ fill: "#9cb8a6", fontSize: 11 }} />
-                <YAxis tickLine={false} axisLine={false} width={32} tick={{ fill: "#9cb8a6", fontSize: 11 }} />
-                <Tooltip
-                  contentStyle={{ background: "#1a2e24", border: "1px solid #2d4a38", borderRadius: 8 }}
-                  labelStyle={{ color: "#d7eadc" }}
-                />
-                <Bar dataKey="burnedHa" fill="#d9774a" radius={4} />
-                <Bar dataKey="encroachmentHa" fill="#c4b5a0" radius={4} />
-              </BarChart>
-            </SizedChart>
+            <BarChartSvg
+              labels={chart.map((h) => h.label)}
+              series={[
+                { name: "Burned ha", color: "#d9774a", values: chart.map((h) => h.burnedHa) },
+                { name: "Encroachment ha", color: "#c4b5a0", values: chart.map((h) => h.encroachmentHa) },
+              ]}
+            />
           </CardContent>
         </Card>
       </div>

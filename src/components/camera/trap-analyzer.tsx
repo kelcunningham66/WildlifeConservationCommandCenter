@@ -5,29 +5,22 @@ import { Camera, Loader2, ShieldAlert, Upload } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { CameraDetection } from "@/data/types";
+import { trapDemos } from "@/data/trap-demos";
 import { cn } from "@/lib/utils";
 
-const demos = [
-  { file: "/samples/elephant-herd.svg", label: "Elephant herd", name: "elephant-herd.svg" },
-  { file: "/samples/rhino-night.svg", label: "Black rhino", name: "rhino-night.svg" },
-  { file: "/samples/lion-pride.svg", label: "Lion pride", name: "lion-pride.svg" },
-  { file: "/samples/vehicle-night.svg", label: "Night vehicle", name: "vehicle-night.svg" },
-  { file: "/samples/human-thermal.svg", label: "Human thermal", name: "human-thermal.svg" },
-  { file: "/samples/snare-zebra.svg", label: "Snare", name: "snare-zebra.svg" },
-];
-
-async function fileFromUrl(url: string, name: string) {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Could not fetch ${url}`);
-  const blob = await res.blob();
-  return new File([blob], name, { type: blob.type || "image/svg+xml" });
-}
-
-export function TrapAnalyzer() {
-  const [preview, setPreview] = useState<string | null>(null);
+export function TrapAnalyzer({
+  initialPreview = null,
+  initialDetection = null,
+  activeDemo,
+}: {
+  initialPreview?: string | null;
+  initialDetection?: CameraDetection | null;
+  activeDemo?: string;
+}) {
+  const [preview, setPreview] = useState<string | null>(initialPreview);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<CameraDetection | null>(null);
+  const [result, setResult] = useState<CameraDetection | null>(initialDetection);
 
   async function run(file: File, previewUrl?: string) {
     setBusy(true);
@@ -76,19 +69,17 @@ export function TrapAnalyzer() {
             />
           </label>
           <div className="flex flex-wrap gap-2">
-            {demos.map((d) => (
-              <button
+            {trapDemos.map((d) => (
+              <a
                 key={d.file}
-                type="button"
-                className="h-7 rounded-lg border border-border px-2.5 text-[0.8rem] hover:bg-muted"
-                onClick={() => {
-                  void fileFromUrl(d.file, d.name)
-                    .then((f) => run(f, d.file))
-                    .catch(() => setError("Could not load the sample frame."));
-                }}
+                href={`/camera-traps?demo=${encodeURIComponent(d.name)}`}
+                className={cn(
+                  "inline-flex h-7 items-center rounded-lg border border-border px-2.5 text-[0.8rem] hover:bg-muted",
+                  activeDemo === d.name && "bg-primary text-primary-foreground"
+                )}
               >
                 {d.label}
-              </button>
+              </a>
             ))}
           </div>
           <div className="relative overflow-hidden rounded-xl border bg-black/40">

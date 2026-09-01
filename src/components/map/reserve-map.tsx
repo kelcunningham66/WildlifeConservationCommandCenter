@@ -1,5 +1,3 @@
-"use client";
-
 import { sectors } from "@/data/sectors";
 import type { SectorId, ThreatSeverity } from "@/data/types";
 import { cn } from "@/lib/utils";
@@ -14,11 +12,11 @@ const fill: Record<ThreatSeverity, string> = {
 export function ReserveMap({
   highlight,
   counts,
-  onSelect,
+  hrefForSector,
 }: {
   highlight?: SectorId;
   counts?: Partial<Record<SectorId, number>>;
-  onSelect?: (id: SectorId) => void;
+  hrefForSector?: (id: SectorId) => string;
 }) {
   return (
     <div className="relative overflow-hidden rounded-xl border bg-card">
@@ -32,8 +30,8 @@ export function ReserveMap({
         <rect width="110" height="100" fill="url(#land)" />
         <path d="M 0 40 C 20 36, 40 48, 70 42 C 90 38, 110 44, 110 44 L 110 100 L 0 100 Z" className="fill-emerald-950/80" />
         <path d="M 6 40 C 22 34, 30 48, 18 58 C 10 52, 4 48, 6 40 Z" className="fill-sky-800/50" />
-        {sectors.map((s) => (
-          <g key={s.id}>
+        {sectors.map((s) => {
+          const pathEl = (
             <path
               d={s.path}
               className={cn(
@@ -41,19 +39,23 @@ export function ReserveMap({
                 fill[s.risk],
                 highlight && highlight !== s.id && "opacity-40"
               )}
-              onClick={() => onSelect?.(s.id)}
             />
-            <text
-              x={s.x}
-              y={s.y}
-              textAnchor="middle"
-              className="fill-foreground text-[5px] font-medium pointer-events-none"
-            >
-              {s.id}
-              {counts?.[s.id] != null ? ` · ${counts[s.id]}` : ""}
-            </text>
-          </g>
-        ))}
+          );
+          return (
+            <g key={s.id}>
+              {hrefForSector ? <a href={hrefForSector(s.id)}>{pathEl}</a> : pathEl}
+              <text
+                x={s.x}
+                y={s.y}
+                textAnchor="middle"
+                className="fill-foreground pointer-events-none text-[5px] font-medium"
+              >
+                {s.id}
+                {counts?.[s.id] != null ? ` · ${counts[s.id]}` : ""}
+              </text>
+            </g>
+          );
+        })}
       </svg>
       <div className="flex flex-wrap gap-2 border-t px-3 py-2 text-[11px] text-muted-foreground">
         <span>Risk: </span>

@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 import {
   Activity,
   Binoculars,
@@ -14,7 +13,6 @@ import {
   ShieldAlert,
   Trees,
 } from "lucide-react";
-import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { conservancy } from "@/data/sectors";
 import { threatAlerts } from "@/data/threats";
 import { cn } from "@/lib/utils";
@@ -28,7 +26,7 @@ const nav = [
   { href: "/species", label: "Endangered species", icon: Binoculars },
 ];
 
-function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
+function NavLinks() {
   const pathname = usePathname();
   return (
     <nav className="flex flex-col gap-1">
@@ -39,7 +37,6 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
           <Link
             key={item.href}
             href={item.href}
-            onClick={onNavigate}
             className={cn(
               "flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-colors",
               active
@@ -71,7 +68,6 @@ function Brand() {
 }
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const [open, setOpen] = useState(false);
   const openThreats = threatAlerts.filter((t) => t.status !== "resolved").length;
 
   return (
@@ -94,14 +90,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex items-center justify-between gap-3 border-b px-4 py-2.5">
           <div className="flex items-center gap-2 md:hidden">
-            <button
-              type="button"
-              className="inline-flex size-8 items-center justify-center rounded-lg hover:bg-muted"
-              onClick={() => setOpen(true)}
-              aria-label="Open menu"
-            >
-              <Menu className="size-4" />
-            </button>
+            <details className="relative">
+              <summary
+                className="inline-flex size-8 cursor-pointer list-none items-center justify-center rounded-lg hover:bg-muted [&::-webkit-details-marker]:hidden"
+                aria-label="Open menu"
+              >
+                <Menu className="size-4" />
+              </summary>
+              <div className="absolute top-full left-0 z-50 mt-2 w-56 rounded-xl border bg-sidebar p-3 shadow-lg">
+                <NavLinks />
+              </div>
+            </details>
             <Brand />
           </div>
           <p className="hidden text-sm text-muted-foreground md:block">
@@ -129,16 +128,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </header>
         <main className="flex-1 p-4 md:p-6">{children}</main>
       </div>
-
-      <Sheet open={open} onOpenChange={(next) => setOpen(next)}>
-        <SheetContent side="left" className="w-64 bg-sidebar p-3">
-          <SheetTitle className="sr-only">Navigation</SheetTitle>
-          <Brand />
-          <div className="mt-4">
-            <NavLinks onNavigate={() => setOpen(false)} />
-          </div>
-        </SheetContent>
-      </Sheet>
     </div>
   );
 }

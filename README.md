@@ -24,23 +24,21 @@ npm run dev
 
 Open [http://127.0.0.1:43180](http://127.0.0.1:43180).
 
-## GitHub: WildlifeConservationCommandCenter
-
-Create a public GitHub repository named **WildlifeConservationCommandCenter**, then push this project:
+## GitHub: [kelcunningham66/WildlifeConservationCommandCenter](https://github.com/kelcunningham66/WildlifeConservationCommandCenter)
 
 ```bash
-git remote add github https://github.com/<your-user>/WildlifeConservationCommandCenter.git
+git remote add github https://github.com/kelcunningham66/WildlifeConservationCommandCenter.git
 git branch -M main
-git push -u github main
+git push -u github main --force
 ```
 
-If you started this project in Cursor without a GitHub remote yet, use the **Create repo** control in the agent view, then rename the repository to `WildlifeConservationCommandCenter` in GitHub settings if needed.
+`--force` is required once if GitHub created an empty starter commit that does not share history with this project.
 
 ## Deploy on Vercel
 
 This is a standard Next.js App Router app. No environment variables, database, or secrets are required.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/YOUR_GITHUB_USER/WildlifeConservationCommandCenter&project-name=wildlife-conservation-command-center&framework=nextjs)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/kelcunningham66/WildlifeConservationCommandCenter&project-name=wildlife-conservation-command-center&framework=nextjs)
 
 Or from the CLI, logged into the Vercel account that should own the deployment:
 

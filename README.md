@@ -4,6 +4,8 @@ RangeWatch is a wildlife intelligence console for conservation field teams. It p
 
 The product is a working operations desk, not a training-model zoo. Camera analysis uses a deterministic vision pipeline (pixel features + catalogue matching). Population lines use Holt linear exponential smoothing on 24 months of survey index data.
 
+Cursor/Claude helped with developing this code
+
 ## What you can do
 
 - **Operations dashboard** — elephant estimate, 12-month projection, live cameras, sector map, recent sightings, open alerts.
